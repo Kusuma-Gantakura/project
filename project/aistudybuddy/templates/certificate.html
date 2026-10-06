@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Certificate of Excellence — AI Study Buddy</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a1e2e;
+      --accent: #d4af37;
+      /* Gold */
+      --text: #2d3436;
+      --text-light: #636e72;
+    }
+
+    body {
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ── Certificate Container ── */
+    .cert-container {
+      width: 100%;
+      max-width: 1000px;
+      aspect-ratio: 1.414 / 1;
+      background: white;
+      position: relative;
+      box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px;
+      box-sizing: border-box;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* ── Decorative Background ── */
+    .cert-bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(var(--accent) 0.5px, transparent 0.5px);
+      background-size: 20px 20px;
+      opacity: 0.03;
+      pointer-events: none;
+    }
+
+    /* ── Ornate Border ── */
+    .cert-border-outer {
+      position: absolute;
+      inset: 20px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+
+    .cert-border-inner {
+      position: absolute;
+      inset: 30px;
+      border: 8px double var(--accent);
+      pointer-events: none;
+    }
+
+    .cert-corner {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--accent);
+      pointer-events: none;
+    }
+
+    .top-left {
+      top: 15px;
+      left: 15px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .top-right {
+      top: 15px;
+      right: 15px;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .bottom-left {
+      bottom: 15px;
+      left: 15px;
+      border-right: none;
+      border-top: none;
+    }
+
+    .bottom-right {
+      bottom: 15px;
+      right: 15px;
+      border-left: none;
+      border-top: none;
+    }
+
+    /* ── Content Sections ── */
+    .cert-header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+      z-index: 1;
+    }
+
+    .logo-container {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-img {
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .site-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .cert-main-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--primary);
+      margin: 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .cert-sub-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--text-light);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .recipient-section {
+      text-align: center;
+      margin: 30px 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .certify-text {
+      font-size: 18px;
+      color: var(--text-light);
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .recipient-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
+      padding: 0 40px 5px;
+      min-width: 300px;
+    }
+
+    .cert-body {
+      font-size: 19px;
+      line-height: 1.8;
+      color: var(--text);
+      max-width: 750px;
+      text-align: center;
+      margin-bottom: 40px;
+      z-index: 1;
+    }
+
+    .highlight {
+      color: var(--primary);
+      font-weight: 700;
+      border-bottom: 1px dotted var(--accent);
+    }
+
+    .performance-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent);
+      margin: 10px 0;
+    }
+
+    .cert-footer {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: auto;
+      padding: 0 60px;
+      z-index: 1;
+      margin-bottom: 20px;
+    }
+
+    .signature-entry {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 220px;
+    }
+
+    .sig-line {
+      width: 100%;
+      border-top: 1px solid var(--text-light);
+      margin-bottom: 10px;
+    }
+
+    .sig-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+
+    .sig-title {
+      font-size: 11px;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .dates-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 20px;
+      width: 100%;
+      font-size: 12px;
+      color: var(--text-light);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+    }
+
+    .date-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .date-label {
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+
+    .cert-id-tag {
+      position: absolute;
+      bottom: 20px;
+      right: 40px;
+      font-size: 10px;
+      color: var(--text-light);
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+
+    /* ── Actions ── */
+    .actions {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+    }
+
+    /* ── Loading ── */
+    .loading-screen {
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Print Styles ── */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .actions {
+        display: none;
+      }
+
+      .cert-container {
+        box-shadow: none;
+        border: none;
+        margin: 0;
+        width: 100%;
+        max-width: none;
+        height: 100vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loading-state" class="loading-screen">
+    <div class="spinner"></div>
+    <p>Preparing your Certificate of Excellence...</p>
+  </div>
+
+  <div id="cert-view" style="display:none">
+    <div class="cert-container" id="printable-cert">
+      <div class="cert-bg-pattern"></div>
+      <div class="cert-border-outer"></div>
+      <div class="cert-border-inner"></div>
+      <div class="cert-corner top-left"></div>
+      <div class="cert-corner top-right"></div>
+      <div class="cert-corner bottom-left"></div>
+      <div class="cert-corner bottom-right"></div>
+
+      <div class="cert-header">
+        <div class="logo-container">
+          <img src="/static/img/logo.png" alt="Logo" class="logo-img">
+          <div class="site-name">AI Study Buddy</div>
+        </div>
+        <h1 class="cert-main-title">Certificate</h1>
+        <div class="cert-sub-title">of Excellence</div>
+      </div>
+
+      <div class="recipient-section">
+        <div class="certify-text">This is to certify that</div>
+        <div class="recipient-name" id="user-name">Loading...</div>
+      </div>
+
+      <div class="cert-body">
+        This is to certify that <strong id="user-name-inline">...</strong> has successfully completed the
+        coursework and final assessments for the <span class="highlight" id="lang-name">...</span>
+        programming curriculum. By achieving a final score of <span class="highlight"><span
+            id="lang-score">0</span>%</span>,
+        they have demonstrated <span id="performance-text"
+          style="font-weight: bold; color: var(--accent);">Outstanding</span>
+        competence and mastery in the language fundamentals.
+        <br>
+        <div class="performance-badge" id="perf-badge">EXCELLENT PERFORMANCE</div>
+      </div>
+
+      <div class="cert-footer">
+        <div class="signature-entry">
+          <div
+            style="font-family: 'Playfair Display', serif; font-size: 24px; color: #333; margin-bottom: 5px; font-style: italic;">
+            AI Mentor</div>
+          <div class="sig-line"></div>
+          <div class="sig-name">AI STUDY BUDDY</div>
+          <div class="sig-title">Curriculum Director</div>
+        </div>
+
+        <div class="signature-entry">
+          <div
+            style="font-family: 'Playfair Display', serif; font-size: 24px; color: #333; margin-bottom: 5px; font-style: italic;">
+            Verified AI</div>
+          <div class="sig-line"></div>
+          <div class="sig-name">DEEPSEEK AI</div>
+          <div class="sig-title">Verification Authority</div>
+        </div>
+      </div>
+
+      <div class="dates-container">
+        <div class="date-item">
+          <span class="date-label">Start Date</span>
+          <span id="start-date-val">-----</span>
+        </div>
+        <div class="date-item">
+          <span class="date-label">Completion Date</span>
+          <span id="issue-date-val">-----</span>
+        </div>
+        <div class="date-item">
+          <span class="date-label">Expiration Date</span>
+          <span id="expiry-date-val">-----</span>
+        </div>
+      </div>
+
+      <div class="cert-id-tag" id="cert-id-tag">CERTIFICATE ID: SB-XXXX-XXXX</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="window.location='/profile'">← Back to Profile</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Download Certificate (PDF)</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadCert() {
+      const certId = window.location.pathname.split('/').pop();
+      try {
+        const res = await fetch(`/api/certificate/${certId}`);
+        if (!res.ok) throw new Error('Not found');
+        const data = await res.json();
+
+        const userName = data.holder_name;
+        document.getElementById('user-name').textContent = userName;
+        document.getElementById('user-name-inline').textContent = userName;
+        document.getElementById('lang-name').textContent = data.language;
+        document.getElementById('lang-score').textContent = data.score;
+        document.getElementById('performance-text').textContent = data.performance || 'Outstanding';
+        document.getElementById('perf-badge').textContent = `${(data.performance || 'Outstanding').toUpperCase()} PERFORMANCE`;
+
+        document.getElementById('cert-id-tag').textContent = `CERTIFICATE ID: SB-${data.id}`;
+        document.getElementById('start-date-val').textContent = data.start_date || data.date;
+        document.getElementById('issue-date-val').textContent = data.date;
+        document.getElementById('expiry-date-val').textContent = data.expiry_date || 'PERMANENT';
+
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('cert-view').style.display = 'block';
+      } catch (err) {
+        document.body.innerHTML = `
+      <div style="color:white; text-align:center; padding-top: 100px;">
+        <h1 style="font-size:64px; margin-bottom: 10px;">404</h1>
+        <p style="font-size: 20px; opacity: 0.8;">Certificate not found or unauthorized.</p>
+        <button class="btn btn-primary" onclick="window.location='/profile'" style="margin-top:40px; padding: 12px 30px;">Return to Profile</button>
+      </div>`;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadCert);
+  </script>
+</body>
+
+</html>

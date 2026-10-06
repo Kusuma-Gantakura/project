@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — AI Study Buddy</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+  <style>
+    /* ════════════════════════════════════════════
+   LAYOUT
+════════════════════════════════════════════ */
+    .app {
+      display: grid;
+      grid-template-columns: 256px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ════════════════════════════════════════════
+   MAIN AREA — cosmos animated background
+════════════════════════════════════════════ */
+    .main {
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: linear-gradient(160deg, #020c1e 0%, #041428 40%, #020f1c 100%);
+    }
+
+    /* Fixed background layers behind main */
+    .main-bg {
+      position: fixed;
+      top: 0;
+      left: 256px;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .main-bg .nb {
+      /* nebula */
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 65% 48% at 88% 4%, rgba(0, 112, 255, .45), transparent 52%),
+        radial-gradient(ellipse 55% 58% at 4% 92%, rgba(0, 80, 220, .32), transparent 52%),
+        radial-gradient(ellipse 45% 42% at 52% 50%, rgba(30, 144, 255, .18), transparent 60%),
+        radial-gradient(ellipse 36% 36% at 25% 18%, rgba(0, 150, 255, .25), transparent 55%),
+        radial-gradient(ellipse 30% 32% at 72% 80%, rgba(0, 60, 180, .22), transparent 55%);
+      animation: nebula 16s ease-in-out infinite alternate;
+    }
+
+    .main-bg .grid {
+      /* dot grid */
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, .05) 1px, transparent 1px);
+      background-size: 44px 44px;
+      animation: gridScroll 32s linear infinite;
+    }
+
+    /* Large blur orbs */
+    .main-bg .o {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    .main-bg .o1 {
+      width: 600px;
+      height: 600px;
+      top: -140px;
+      right: -100px;
+      background: radial-gradient(circle, rgba(0, 100, 255, .38) 0%, transparent 65%);
+      animation: orb1 28s linear infinite;
+      opacity: .6;
+    }
+
+    .main-bg .o2 {
+      width: 480px;
+      height: 480px;
+      bottom: -100px;
+      right: 28%;
+      background: radial-gradient(circle, rgba(0, 60, 200, .28) 0%, transparent 65%);
+      animation: orb2 35s linear infinite;
+      animation-delay: -14s;
+      opacity: .5;
+    }
+
+    .main-bg .o3 {
+      width: 360px;
+      height: 360px;
+      top: 30%;
+      right: 5%;
+      background: radial-gradient(circle, rgba(30, 144, 255, .35) 0%, transparent 65%);
+      animation: orb1 20s linear infinite;
+      animation-delay: -7s;
+      opacity: .45;
+    }
+
+    /* Stars */
+    .main-bg .star {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .7);
+      animation: twinkle ease-in-out infinite;
+    }
+
+    /* ── Content above bg ── */
+    .main-inner {
+      position: relative;
+      z-index: 1;
+      padding: 44px 48px;
+    }
+
+    /* ════════════════════════════════════════════
+   PAGE HEADER
+════════════════════════════════════════════ */
+    .page-header {
+      margin-bottom: 48px;
+      animation: fadeUp .5s var(--ease) both;
+    }
+
+    .greeting {
+      font-size: 16px;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: .1px;
+    }
+
+    .greeting-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #1e90ff;
+      box-shadow: 0 0 10px #1e90ff;
+      animation: pulse 2.5s infinite;
+    }
+
+    .page-header h1 {
+      font-size: clamp(36px, 4vw, 52px);
+      font-weight: 900;
+      letter-spacing: -.8px;
+      line-height: 1.1;
+    }
+
+    .page-header h1 .name {
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 40%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ════════════════════════════════════════════
+   STAT CARDS
+════════════════════════════════════════════ */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 50px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid rgba(255, 255, 255, .09);
+      border-radius: var(--r24);
+      padding: 28px 24px;
+      animation: fadeUp .5s var(--ease) both;
+      transition: all .26s var(--ease);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    /* Gradient accent line at top — slides in on hover */
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #0070ff, #38bdf8, #0070ff);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s var(--ease);
+    }
+
+    /* Inner radial glow */
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 80% 55% at 50% -5%, rgba(0, 100, 255, .08), transparent 60%);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0, 112, 255, .4);
+      box-shadow: 0 20px 56px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0, 112, 255, .15), 0 0 30px rgba(0, 80, 255, .18);
+    }
+
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: .05s
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: .1s
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: .15s
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: .2s
+    }
+
+    .s-icon {
+      font-size: 38px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .s-value {
+      font-size: 52px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      line-height: 1;
+      background: linear-gradient(135deg, #fff, rgba(255, 255, 255, .7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .s-label {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .42);
+      font-weight: 700;
+      letter-spacing: .1px;
+    }
+
+    /* ════════════════════════════════════════════
+   SECTION HEADING
+════════════════════════════════════════════ */
+    .sec-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .sec-hd h2 {
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+
+    /* ════════════════════════════════════════════
+   LANGUAGE CARDS
+════════════════════════════════════════════ */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 18px;
+      margin-bottom: 50px;
+    }
+
+    .lang-card {
+      background: rgba(255, 255, 255, .052);
+      border: 2px solid rgba(255, 255, 255, .08);
+      border-radius: var(--r24);
+      padding: 26px;
+      cursor: pointer;
+      transition: all .25s var(--ease);
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .5s var(--ease) both;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .lang-card::before {
+      /* top colour bar */
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--lc);
+      opacity: 0;
+      transition: opacity .22s;
+    }
+
+    .lang-card::after {
+      /* inner shimmer */
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 90% 50% at 50% -5%, rgba(255, 255, 255, .05), transparent 55%);
+      pointer-events: none;
+    }
+
+    .lang-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--lc);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, .55);
+    }
+
+    .lang-card:hover::before {
+      opacity: 1;
+    }
+
+    .lang-card.completed {
+      border-color: rgba(6, 214, 160, .32);
+    }
+
+    .lang-card.completed::before {
+      opacity: 1;
+      background: var(--t);
+    }
+
+    .lc-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .lc-icon {
+      font-size: 44px;
+      line-height: 1;
+    }
+
+    .lc-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: var(--pill);
+      letter-spacing: .4px;
+    }
+
+    .lc-badge.beginner {
+      background: rgba(74, 222, 128, .12);
+      color: var(--g2);
+    }
+
+    .lc-badge.intermediate {
+      background: rgba(245, 158, 11, .1);
+      color: var(--am);
+    }
+
+    .lc-badge.completed-badge {
+      background: rgba(6, 214, 160, .14);
+      color: var(--t2);
+      border: 1px solid rgba(6, 214, 160, .3);
+    }
+
+    .lc-name {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 7px;
+      color: var(--lc);
+    }
+
+    .lc-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .44);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .lc-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lc-count {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .3);
+      font-weight: 600;
+    }
+
+    .lc-start {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--p2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ════════════════════════════════════════════
+   ACTIVITY / RESULTS
+════════════════════════════════════════════ */
+    .act-list {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    .act-item {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid rgba(255, 255, 255, .08);
+      border-radius: var(--r20);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      animation: fadeUp .5s var(--ease) both;
+      transition: all .22s var(--ease);
+      backdrop-filter: blur(12px);
+    }
+
+    .act-item:hover {
+      border-color: rgba(0, 112, 255, .38);
+      transform: translateX(5px);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, .35);
+    }
+
+    .act-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .act-ico {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .act-ico.pass {
+      background: rgba(74, 222, 128, .12);
+    }
+
+    .act-ico.fail {
+      background: rgba(244, 63, 94, .1);
+    }
+
+    .act-lang {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .act-date {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .35);
+    }
+
+    .act-pct {
+      font-size: 32px;
+      font-weight: 900;
+      font-family: var(--mono);
+    }
+
+    .act-pct.pass {
+      color: var(--g2);
+    }
+
+    .act-pct.fail {
+      color: var(--r);
+    }
+
+    /* Responsive */
+    @media(max-width:900px) {
+      .app {
+        grid-template-columns: 1fr
+      }
+
+      .main-inner {
+        padding: 24px 18px
+      }
+
+      .main-bg {
+        left: 0
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .lang-grid {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr))
+      }
+    }
+
+    @media(max-width:480px) {
+      .stats {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- ══ SIDEBAR ══════════════════════════ -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="b-icon">🎓</div>
+        <span>Study Buddy</span>
+      </div>
+      <div class="sidebar-section">Main Menu</div>
+      <a href="/dashboard" class="nav-link active"><span class="nl-icon">🏠</span>Dashboard</a>
+      <a href="/learn" class="nav-link"><span class="nl-icon">📚</span>Start Learning</a>
+      <a href="/profile" class="nav-link"><span class="nl-icon">👤</span>My Profile</a>
+      <div class="sidebar-bottom">
+        <div class="user-pill" onclick="window.location='/profile'">
+          <div class="avatar-sm" id="sb-av">?</div>
+          <div>
+            <div class="uname" id="sb-name">Loading…</div>
+            <div class="uemail" id="sb-email"></div>
+          </div>
+        </div>
+        <a href="/logout" class="nav-link" style="margin-top:8px"><span class="nl-icon">🚪</span>Sign Out</a>
+      </div>
+    </aside>
+
+    <!-- ══ MAIN ════════════════════════════ -->
+    <main class="main">
+
+      <!-- Fixed background -->
+      <div class="main-bg">
+        <div class="nb"></div>
+        <div class="grid"></div>
+        <div class="o o1"></div>
+        <div class="o o2"></div>
+        <div class="o o3"></div>
+        <div id="stars"></div>
+      </div>
+
+      <div class="main-inner">
+
+        <!-- Header -->
+        <div class="page-header">
+          <div class="greeting">
+            <span class="greeting-dot"></span>
+            <span id="greeting-txt">Good to see you back</span>
+          </div>
+          <h1>Welcome, <span class="name" id="hero-name">…</span></h1>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat-card">
+            <span class="s-icon">🏆</span>
+            <div class="s-value" id="s-langs">–</div>
+            <div class="s-label">Languages Mastered</div>
+          </div>
+          <div class="stat-card">
+            <span class="s-icon">📖</span>
+            <div class="s-value" id="s-topics">–</div>
+            <div class="s-label">Topics Completed</div>
+          </div>
+          <div class="stat-card">
+            <span class="s-icon">📝</span>
+            <div class="s-value" id="s-quizzes">–</div>
+            <div class="s-label">Quiz Attempts</div>
+          </div>
+          <div class="stat-card">
+            <span class="s-icon">📅</span>
+            <div class="s-value" id="s-joined" style="font-size:20px;padding-top:8px">–</div>
+            <div class="s-label">Member Since</div>
+          </div>
+        </div>
+
+        <!-- Languages -->
+        <div class="sec-hd">
+          <h2>🌐 Choose a Language</h2>
+          <a href="/learn" class="btn btn-secondary btn-sm">View All →</a>
+        </div>
+        <div class="lang-grid" id="lang-grid">
+          <div class="spinner"></div>
+        </div>
+
+        <!-- Results -->
+        <div class="sec-hd">
+          <h2>📊 Recent Quiz Results</h2>
+        </div>
+        <div id="act-area">
+          <div class="spinner"></div>
+        </div>
+
+      </div><!-- /main-inner -->
+    </main>
+
+  </div><!-- /app -->
+  <div id="toast"></div>
+
+  <script src="/static/js/theme-switcher.js"></script>
+  <script>
+    /* Stars */
+    const sc = document.getElementById('stars');
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement('div'); s.className = 'star';
+      const sz = Math.random() * 2 + .5;
+      s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * window.innerWidth}px;top:${Math.random() * window.innerHeight}px;animation-duration:${Math.random() * 4 + 2}s;animation-delay:${Math.random() * 7}s;`;
+      sc.appendChild(s);
+    }
+
+    /* Greeting */
+    const h = new Date().getHours();
+    document.getElementById('greeting-txt').textContent =
+      h < 12 ? 'Good morning ☀️' : h < 17 ? 'Good afternoon 👋' : 'Good evening 🌙';
+
+    /* Toast */
+    function showToast(msg, t = 'success') { const el = document.getElementById('toast'); el.textContent = msg; el.className = 'show ' + t; clearTimeout(el._t); el._t = setTimeout(() => el.className = '', 3500); }
+
+    /* Dashboard load */
+    async function load() {
+      try {
+        const [pr, lr] = await Promise.all([
+          fetch('/api/profile').then(r => r.json()),
+          fetch('/api/languages').then(r => r.json())
+        ]);
+
+        /* Header */
+        document.getElementById('hero-name').textContent = pr.name?.split(' ')[0] || 'Learner';
+        document.getElementById('sb-av').textContent = pr.avatar || '?';
+        document.getElementById('sb-name').textContent = pr.name || '';
+        document.getElementById('sb-email').textContent = pr.email || '';
+
+        /* Stats */
+        document.getElementById('s-langs').textContent = pr.completed_langs?.length || 0;
+        document.getElementById('s-topics').textContent = pr.total_topics || 0;
+        document.getElementById('s-quizzes').textContent = pr.quiz_attempts || 0;
+        document.getElementById('s-joined').textContent = pr.joined || '–';
+
+        /* Language cards */
+        document.getElementById('lang-grid').innerHTML = lr.map((l, i) => `
+      <div class="lang-card ${l.completed ? 'completed' : ''}"
+           style="--lc:${l.color};animation-delay:${i * .05 + .1}s"
+           onclick="window.location='/learn?lang=${encodeURIComponent(l.name)}'">
+        <div class="lc-head">
+          <span class="lc-icon">${l.icon}</span>
+          ${l.completed
+            ? `<span class="lc-badge completed-badge">✅ Mastered</span>`
+            : `<span class="lc-badge ${l.level.toLowerCase()}">${l.level}</span>`}
+        </div>
+        <div class="lc-name">${l.name}</div>
+        <div class="lc-desc">${l.desc}</div>
+        <div class="lc-foot">
+          <span class="lc-count">${l.topic_count} topics</span>
+          <span class="lc-start">${l.completed ? 'Review' : 'Start'} →</span>
+        </div>
+      </div>`).join('');
+
+        /* Activity */
+        const area = document.getElementById('act-area');
+        if (!pr.recent_results?.length) {
+          area.innerHTML = `<div class="empty-state"><span class="empty-icon">📊</span><h3>No quiz results yet</h3><p>Complete all courses with 85%+ overall to earn your first certificate!</p></div>`;
+          return;
+        }
+        area.innerHTML = `<div class="act-list">${pr.recent_results.map((r, i) => `
+      <div class="act-item" style="animation-delay:${i * .05}s">
+        <div class="act-left">
+          <div class="act-ico ${r.passed ? 'pass' : 'fail'}">${r.passed ? '✅' : '📚'}</div>
+          <div>
+            <div class="act-lang">${r.language}</div>
+            <div class="act-date">${r.date}</div>
+          </div>
+        </div>
+        <div class="act-pct ${r.passed ? 'pass' : 'fail'}">${r.overall}%</div>
+      </div>`).join('')}</div>`;
+
+      } catch (e) { showToast('Failed to load dashboard', 'error'); }
+    }
+    load();
+  </script>
+</body>
+
+</html>

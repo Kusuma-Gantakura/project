@@ -1,0 +1,413 @@
+{
+  "users": {
+    "a5ec5fd9-1930-4d5a-84d7-737fd5d7ad80": {
+      "id": "a5ec5fd9-1930-4d5a-84d7-737fd5d7ad80",
+      "name": "kusuma",
+      "email": "kusuma@gmail.com",
+      "password": "e1a80d6e084c7e9cfd83b5aadf20c7c131e5bc81169fd7d42c53d552185e6c71",
+      "joined": "19 Feb 2026",
+      "avatar": "K"
+    },
+    "a3c14022-ca9b-4851-9d62-b44e10e875eb": {
+      "id": "a3c14022-ca9b-4851-9d62-b44e10e875eb",
+      "name": "swetha",
+      "email": "swetha@gmail.com",
+      "password": "b803cf8532e1bb11dc2e7b503033abcc08d827a2687774455c13b8300db75ef3",
+      "joined": "19 Feb 2026",
+      "avatar": "S",
+      "bio": "MCA",
+      "education": "KL Universityu",
+      "phone": "9182641889"
+    },
+    "d45459ed-48be-4af0-9749-033b571153c8": {
+      "id": "d45459ed-48be-4af0-9749-033b571153c8",
+      "name": "Test User",
+      "email": "theme@test.com",
+      "password": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+      "joined": "24 Mar 2026",
+      "avatar": "T"
+    }
+  },
+  "progress": {
+    "a5ec5fd9-1930-4d5a-84d7-737fd5d7ad80": {
+      "Python": {
+        "py_vars": true,
+        "py_control": true,
+        "py_functions": true,
+        "py_oop": true,
+        "py_exceptions": true,
+        "py_libs": true
+      },
+      "HTML": {
+        "html_structure": true,
+        "html_tags": true,
+        "html_forms": true,
+        "html_semantic": true,
+        "html_attrs": true
+      }
+    },
+    "a3c14022-ca9b-4851-9d62-b44e10e875eb": {
+      "Python": {
+        "py_vars": true,
+        "py_control": true,
+        "py_functions": true,
+        "py_oop": true,
+        "py_exceptions": true,
+        "py_libs": true
+      },
+      "HTML": {
+        "html_structure": false,
+        "html_tags": false,
+        "html_forms": false,
+        "html_semantic": false,
+        "html_attrs": false
+      }
+    },
+    "d45459ed-48be-4af0-9749-033b571153c8": {
+      "Python": {
+        "py_vars": true,
+        "py_control": true,
+        "py_functions": true,
+        "py_oop": true
+      }
+    }
+  },
+  "results": {
+    "a5ec5fd9-1930-4d5a-84d7-737fd5d7ad80": [
+      {
+        "language": "Python",
+        "overall": 90,
+        "passed": false,
+        "results": [
+          {
+            "topic_id": "py_control",
+            "topic_title": "Control Flow",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "py_functions",
+            "topic_title": "Functions",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "py_exceptions",
+            "topic_title": "Exception Handling",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_libs",
+            "topic_title": "Libraries & Modules",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_oop",
+            "topic_title": "OOP & Classes",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_vars",
+            "topic_title": "Variables & Data Types",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          }
+        ],
+        "date": "19 Feb 2026, 11:01"
+      },
+      {
+        "language": "Python",
+        "overall": 100,
+        "passed": true,
+        "results": [
+          {
+            "topic_id": "py_functions",
+            "topic_title": "Functions",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_vars",
+            "topic_title": "Variables & Data Types",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_control",
+            "topic_title": "Control Flow",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          }
+        ],
+        "date": "19 Feb 2026, 11:03"
+      },
+      {
+        "language": "Python",
+        "overall": 87,
+        "passed": false,
+        "results": [
+          {
+            "topic_id": "py_exceptions",
+            "topic_title": "Exception Handling",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_libs",
+            "topic_title": "Libraries & Modules",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "py_control",
+            "topic_title": "Control Flow",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_oop",
+            "topic_title": "OOP & Classes",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "py_vars",
+            "topic_title": "Variables & Data Types",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "py_functions",
+            "topic_title": "Functions",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          }
+        ],
+        "date": "19 Feb 2026, 11:34"
+      }
+    ],
+    "a3c14022-ca9b-4851-9d62-b44e10e875eb": [
+      {
+        "language": "Python",
+        "overall": 33,
+        "passed": false,
+        "results": [
+          {
+            "topic_id": "py_libs",
+            "topic_title": "Libraries & Modules",
+            "correct": 1,
+            "total": 5,
+            "percentage": 20,
+            "passed": false
+          },
+          {
+            "topic_id": "py_exceptions",
+            "topic_title": "Exception Handling",
+            "correct": 2,
+            "total": 5,
+            "percentage": 40,
+            "passed": false
+          },
+          {
+            "topic_id": "py_functions",
+            "topic_title": "Functions",
+            "correct": 1,
+            "total": 5,
+            "percentage": 20,
+            "passed": false
+          },
+          {
+            "topic_id": "py_vars",
+            "topic_title": "Variables & Data Types",
+            "correct": 1,
+            "total": 5,
+            "percentage": 20,
+            "passed": false
+          },
+          {
+            "topic_id": "py_oop",
+            "topic_title": "OOP & Classes",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "py_control",
+            "topic_title": "Control Flow",
+            "correct": 1,
+            "total": 5,
+            "percentage": 20,
+            "passed": false
+          }
+        ],
+        "date": "07 Apr 2026, 11:32",
+        "weak_topics": [
+          "py_libs",
+          "py_exceptions",
+          "py_functions",
+          "py_vars",
+          "py_oop",
+          "py_control"
+        ]
+      },
+      {
+        "language": "Python",
+        "overall": 100,
+        "passed": true,
+        "results": [
+          {
+            "topic_id": "py_exceptions",
+            "topic_title": "Exception Handling",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_vars",
+            "topic_title": "Variables & Data Types",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_functions",
+            "topic_title": "Functions",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_libs",
+            "topic_title": "Libraries & Modules",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_control",
+            "topic_title": "Control Flow",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          },
+          {
+            "topic_id": "py_oop",
+            "topic_title": "OOP & Classes",
+            "correct": 5,
+            "total": 5,
+            "percentage": 100,
+            "passed": true
+          }
+        ],
+        "date": "09 Apr 2026, 12:34",
+        "weak_topics": []
+      },
+      {
+        "language": "HTML",
+        "overall": 40,
+        "passed": false,
+        "results": [
+          {
+            "topic_id": "html_tags",
+            "topic_title": "Essential Tags",
+            "correct": 0,
+            "total": 5,
+            "percentage": 0,
+            "passed": false
+          },
+          {
+            "topic_id": "html_structure",
+            "topic_title": "Document Structure",
+            "correct": 1,
+            "total": 5,
+            "percentage": 20,
+            "passed": false
+          },
+          {
+            "topic_id": "html_semantic",
+            "topic_title": "Semantic HTML5",
+            "correct": 4,
+            "total": 5,
+            "percentage": 80,
+            "passed": false
+          },
+          {
+            "topic_id": "html_attrs",
+            "topic_title": "Attributes & Accessibility",
+            "correct": 2,
+            "total": 5,
+            "percentage": 40,
+            "passed": false
+          },
+          {
+            "topic_id": "html_forms",
+            "topic_title": "Forms & Inputs",
+            "correct": 3,
+            "total": 5,
+            "percentage": 60,
+            "passed": false
+          }
+        ],
+        "date": "09 Apr 2026, 12:36",
+        "weak_topics": [
+          "html_tags",
+          "html_structure",
+          "html_semantic",
+          "html_attrs",
+          "html_forms"
+        ]
+      }
+    ]
+  },
+  "certificates": {
+    "a3c14022-ca9b-4851-9d62-b44e10e875eb": [
+      {
+        "id": "96BAFC89",
+        "language": "Python",
+        "score": 100,
+        "date": "09 Apr 2026",
+        "issued": "2026-04-09T12:34:06.497647",
+        "expiry_date": "09 Apr 2029"
+      }
+    ]
+  }
+}

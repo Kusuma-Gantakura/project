@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Learn — AI Study Buddy</title>
+  <link rel="stylesheet" href="/static/css/base.css">
+  <style>
+    /* ── App shell ───────────────────────── */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh
+    }
+
+    .sidebar {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700
+    }
+
+    .sidebar-brand .icon {
+      font-size: 22px
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: var(--text2);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .15s
+    }
+
+    .nav-link:hover {
+      background: var(--bg3);
+      color: var(--text)
+    }
+
+    .nav-link.active {
+      background: rgba(108, 99, 255, .12);
+      color: var(--indigo2)
+    }
+
+    .nl-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border)
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background .15s
+    }
+
+    .user-pill:hover {
+      background: var(--bg3)
+    }
+
+    .user-info .uname {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .user-info .uemail {
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    /* ── SCREENS ─────────────────────────── */
+    .screen {
+      display: none;
+      min-height: 100vh
+    }
+
+    .screen.active {
+      display: block;
+      animation: fadeIn .3s ease
+    }
+
+    /* ── TOPBAR ─────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: rgba(8, 11, 20, .9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
+
+    .tb-brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--indigo2);
+      cursor: pointer
+    }
+
+    .tb-steps {
+      display: flex;
+      gap: 4px
+    }
+
+    .ts {
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      background: var(--bg2);
+      border: 1px solid transparent;
+      transition: all .2s
+    }
+
+    .ts.active {
+      color: var(--indigo2);
+      border-color: rgba(108, 99, 255, .4);
+      background: rgba(108, 99, 255, .1)
+    }
+
+    .ts.done {
+      color: var(--green);
+      border-color: rgba(52, 211, 153, .3);
+      background: rgba(52, 211, 153, .08)
+    }
+
+    /* ── SCREEN 1: SELECT LANGUAGE ──────── */
+    #sc-select {
+      background: var(--bg)
+    }
+
+    .sc-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 32px
+    }
+
+    .sc-heading {
+      text-align: center;
+      margin-bottom: 40px
+    }
+
+    .sc-heading h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px
+    }
+
+    .sc-heading p {
+      font-size: 15px;
+      color: var(--text2)
+    }
+
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px
+    }
+
+    .lcard {
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px 20px;
+      cursor: pointer;
+      transition: all .22s;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .4s ease both;
+      text-align: center
+    }
+
+    .lcard::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--lc), transparent 70%);
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .lcard:hover {
+      transform: translateY(-5px);
+      border-color: var(--lc);
+      box-shadow: 0 14px 48px rgba(0, 0, 0, .4)
+    }
+
+    .lcard:hover::after {
+      opacity: .08
+    }
+
+    .lcard-icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 14px;
+      transition: transform .25s
+    }
+
+    .lcard:hover .lcard-icon {
+      transform: scale(1.1)
+    }
+
+    .lcard-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--lc);
+      margin-bottom: 4px
+    }
+
+    .lcard-topics {
+      font-size: 12px;
+      color: var(--text3)
+    }
+
+    .lcard-desc {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 8px;
+      line-height: 1.5
+    }
+
+    .lcard.mastered {
+      border-color: rgba(52, 211, 153, .35)
+    }
+
+    /* ── SCREEN 2: STUDY ─────────────────── */
+    #sc-study {
+      background: var(--bg)
+    }
+
+    .study-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 57px)
+    }
+
+    .study-sidebar {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto
+    }
+
+    .ss-lang-badge {
+      padding: 7px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .3px;
+      margin-bottom: 4px
+    }
+
+    .ss-section {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text3);
+      text-transform: uppercase;
+      padding: 0 8px
+    }
+
+    .topic-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1
+    }
+
+    .topic-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid transparent;
+      font-size: 13px;
+      font-weight: 500
+    }
+
+    .topic-row:hover {
+      background: var(--bg3)
+    }
+
+    .topic-row.active {
+      background: rgba(108, 99, 255, .12);
+      border-color: rgba(108, 99, 255, .3);
+      color: var(--indigo2)
+    }
+
+    .topic-row.done {
+      color: var(--green)
+    }
+
+    .tr-icon {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+      color: var(--text3)
+    }
+
+    .topic-row.done .tr-icon {
+      color: var(--green)
+    }
+
+    .topic-row.active .tr-icon {
+      color: var(--indigo2)
+    }
+
+    .ss-progress-wrap {
+      background: var(--bg3);
+      border-radius: 12px;
+      padding: 14px
+    }
+
+    .ss-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 8px
+    }
+
+    .quiz-btn-area {
+      margin-top: 4px
+    }
+
+    .quiz-locked {
+      background: var(--bg3);
+      border: 1px dashed var(--border2);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--text3);
+      text-align: center;
+      line-height: 1.5
+    }
+
+    /* Topic content */
+    .topic-content {
+      padding: 44px 48px;
+      background: var(--bg);
+      min-height: calc(100vh - 57px)
+    }
+
+    .topic-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      color: var(--text2)
+    }
+
+    .topic-empty .te-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: .3
+    }
+
+    .topic-empty h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px
+    }
+
+    .topic-empty p {
+      font-size: 15px;
+      max-width: 440px;
+      line-height: 1.7
+    }
+
+    .content-card {
+      max-width: 860px
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text3);
+      font-family: var(--font-mono);
+      margin-bottom: 8px
+    }
+
+    .content-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--violet);
+      margin-bottom: 6px
+    }
+
+    .content-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 32px
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .content-desc {
+      font-size: 15px;
+      line-height: 1.85;
+      color: #c0ccdf;
+      margin-bottom: 32px
+    }
+
+    .code-wrap {
+      background: #060910;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 36px
+    }
+
+    .code-topbar {
+      background: var(--bg3);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%
+    }
+
+    .cd-red {
+      background: #ff5f57
+    }
+
+    .cd-yellow {
+      background: #febc2e
+    }
+
+    .cd-green {
+      background: #28c840
+    }
+
+    .code-lang-tag {
+      font-size: 11px;
+      color: var(--text3);
+      font-family: var(--font-mono);
+      margin-left: auto
+    }
+
+    .code-block {
+      padding: 24px 28px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #7ec8a0;
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre
+    }
+
+    .complete-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border)
+    }
+
+    .complete-hint {
+      font-size: 13px;
+      color: var(--text2)
+    }
+
+    .next-topic-hint {
+      font-size: 12px;
+      color: var(--indigo2);
+      cursor: pointer;
+      text-decoration: underline
+    }
+
+    .next-topic-hint:hover {
+      color: var(--violet)
+    }
+
+    .btn-complete-done {
+      background: transparent;
+      border: 1.5px solid var(--green);
+      color: var(--green);
+      cursor: default
+    }
+
+    .btn-complete-done:hover {
+      transform: none;
+      box-shadow: none;
+      background: transparent
+    }
+
+    /* ── SCREEN 3: QUIZ ──────────────────── */
+    #sc-quiz {
+      background: var(--bg)
+    }
+
+    .quiz-body-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 32px;
+      padding-bottom: 60px
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .quiz-header h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--violet)
+    }
+
+    .quiz-header p {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 4px
+    }
+
+    .quiz-answered-badge {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--indigo2);
+      white-space: nowrap
+    }
+
+    .quiz-pbar {
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 100px;
+      margin-bottom: 36px;
+      overflow: hidden
+    }
+
+    .quiz-pbar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--indigo), var(--violet));
+      border-radius: 100px;
+      width: 0;
+      transition: width .4s ease
+    }
+
+    .q-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 22px
+    }
+
+    .q-card {
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      transition: all .2s;
+      position: relative
+    }
+
+    .q-card.answered {
+      border-color: rgba(108, 99, 255, .6);
+      box-shadow: 0 0 20px rgba(108, 99, 255, .1)
+    }
+
+    .q-topic-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--indigo);
+      text-transform: uppercase;
+      margin-bottom: 6px
+    }
+
+    .q-num {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px
+    }
+
+    .q-text {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 20px;
+      color: var(--text)
+    }
+
+    .q-opts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all .15s;
+      text-align: left;
+      color: var(--text);
+      font-size: 14px;
+      font-family: var(--font);
+      width: 100%;
+      position: relative
+    }
+
+    .opt-btn:hover {
+      border-color: rgba(108, 99, 255, .4);
+      background: rgba(108, 99, 255, .06)
+    }
+
+    .opt-btn.selected {
+      border-color: var(--indigo);
+      background: rgba(108, 99, 255, .14);
+      color: var(--indigo2);
+      box-shadow: 0 0 15px rgba(108, 99, 255, .15)
+    }
+
+    .opt-btn.selected::after {
+      content: '✓';
+      position: absolute;
+      right: 16px;
+      font-weight: bold;
+      font-size: 18px
+    }
+
+    .opt-letter {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: var(--bg4);
+      border: 1.5px solid var(--border2);
+      color: var(--text3);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s
+    }
+
+    .opt-btn.selected .opt-letter {
+      background: var(--indigo);
+      color: #fff;
+      border-color: var(--indigo)
+    }
+
+    .quiz-submit-row {
+      margin-top: 40px;
+      text-align: center
+    }
+
+    .q-actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end
+    }
+
+    .hint-box {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(251, 191, 36, .06);
+      border: 1px solid rgba(251, 191, 36, .25);
+      border-radius: 10px;
+      font-size: 13px;
+      color: #fbbf24;
+      line-height: 1.6;
+      animation: fadeIn .3s ease
+    }
+
+    .hint-box b {
+      color: #f59e0b;
+      margin-right: 6px
+    }
+
+    /* ── SCREEN 4: RESULTS ───────────────── */
+    #sc-results {
+      background: var(--bg)
+    }
+
+    .results-body {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 32px 80px
+    }
+
+    .result-hero {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 44px 32px;
+      text-align: center;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .result-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% -10%, var(--hero-color), transparent);
+      opacity: .12
+    }
+
+    .result-emoji {
+      font-size: 60px;
+      display: block;
+      margin-bottom: 14px
+    }
+
+    .result-status {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px
+    }
+
+    .result-msg {
+      font-size: 14px;
+      color: var(--text2);
+      margin-bottom: 28px;
+      line-height: 1.6;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    .score-ring-svg {
+      width: 130px;
+      height: 130px;
+      display: block;
+      margin: 0 auto 6px
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--bg4);
+      stroke-width: 10
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 1.4s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .ring-pct {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      fill: var(--text)
+    }
+
+    .ring-label {
+      font-family: var(--font);
+      font-size: 10px;
+      fill: var(--text3)
+    }
+
+    .score-desc {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 600
+    }
+
+    .rs-hd {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--text3);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      padding: 0 2px
+    }
+
+    .topic-results {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px
+    }
+
+    .tr-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px
+    }
+
+    .tr-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .tr-name {
+      font-size: 14px;
+      font-weight: 600
+    }
+
+    .tr-right {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .tr-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 100px
+    }
+
+    .tr-badge.pass {
+      background: rgba(52, 211, 153, .1);
+      color: var(--green)
+    }
+
+    .tr-badge.fail {
+      background: rgba(248, 113, 113, .1);
+      color: var(--red)
+    }
+
+    .tr-score {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700
+    }
+
+    .tr-score.pass {
+      color: var(--green)
+    }
+
+    .tr-score.fail {
+      color: var(--red)
+    }
+
+    .tr-bar-track {
+      height: 6px;
+      background: var(--bg4);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .tr-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width .8s ease
+    }
+
+    .tr-bar-fill.pass {
+      background: var(--green)
+    }
+
+    .tr-bar-fill.fail {
+      background: var(--red)
+    }
+
+    .result-alert {
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      line-height: 1.6;
+      display: flex;
+      gap: 12px
+    }
+
+    .result-alert.pass {
+      background: rgba(52, 211, 153, .07);
+      border: 1px solid rgba(52, 211, 153, .25);
+      color: #6ee7b7
+    }
+
+    .result-alert.fail {
+      background: rgba(248, 113, 113, .07);
+      border: 1px solid rgba(248, 113, 113, .25);
+      color: #fca5a5
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal-box {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      animation: popIn .25s ease
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.92)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    .modal-icon {
+      font-size: 42px;
+      margin-bottom: 12px
+    }
+
+    .modal-box h3 {
+      font-size: 21px;
+      margin-bottom: 8px
+    }
+
+    .modal-box p {
+      font-size: 14px;
+      margin-bottom: 24px
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center
+    }
+
+    /* responsive */
+    @media(max-width:900px) {
+      .app-layout {
+        grid-template-columns: 1fr
+      }
+
+      .sidebar {
+        display: none
+      }
+
+      .study-layout {
+        grid-template-columns: 1fr
+      }
+
+      .study-sidebar {
+        position: static;
+        height: auto;
+        max-height: none
+      }
+
+      .topic-content {
+        padding: 24px 16px
+      }
+
+      .quiz-body-wrap {
+        padding: 24px 16px
+      }
+
+      .results-body {
+        padding: 24px 16px
+      }
+
+      .topbar {
+        padding: 12px 16px
+      }
+
+      .tb-steps {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SCREEN 1: SELECT LANGUAGE -->
+  <div id="sc-select" class="screen active">
+    <div class="topbar">
+      <div class="tb-brand" onclick="window.location='/dashboard'">🎓 AI Study Buddy</div>
+      <div class="tb-steps">
+        <div class="ts active">① Select Language</div>
+        <div class="ts">② Study Topics</div>
+        <div class="ts">③ Quiz</div>
+        <div class="ts">④ Results</div>
+      </div>
+      <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
+    </div>
+    <div class="sc-body">
+      <div class="sc-heading">
+        <h2>Choose a Programming Language</h2>
+        <p>Select the language you want to master today</p>
+      </div>
+      <div class="lang-grid" id="lang-grid">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: STUDY TOPICS -->
+  <div id="sc-study" class="screen">
+    <div class="topbar">
+      <div class="tb-brand" onclick="confirmLeave()">🎓 AI Study Buddy</div>
+      <div class="tb-steps">
+        <div class="ts done">① Language</div>
+        <div class="ts active">② Study Topics</div>
+        <div class="ts">③ Quiz</div>
+        <div class="ts">④ Results</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="confirmLeave()">✕ Leave</button>
+    </div>
+    <div class="study-layout">
+      <aside class="study-sidebar">
+        <div id="ss-lang-badge" class="ss-lang-badge"></div>
+        <div class="ss-section">Topics</div>
+        <div id="topic-list" class="topic-list"></div>
+        <div class="ss-progress-wrap">
+          <div class="ss-progress-label">
+            <span>Progress</span><span id="prog-txt">0 / 0</span>
+          </div>
+          <div class="progress-track" style="margin-bottom:0">
+            <div class="progress-fill indigo" id="prog-fill"></div>
+          </div>
+        </div>
+        <div class="quiz-btn-area">
+          <div id="quiz-locked-msg" class="quiz-locked">🔒 Complete all topics to unlock the quiz</div>
+          <button id="quiz-unlock-btn" class="btn btn-primary btn-full hidden" onclick="startQuiz()">🎯 Start Final
+            Quiz</button>
+        </div>
+      </aside>
+      <main id="topic-content" class="topic-content">
+        <div class="topic-empty">
+          <div class="te-icon">👈</div>
+          <h3>Select a topic from the sidebar</h3>
+          <p>Read each topic carefully and click <strong>Mark as Complete</strong> when done. Complete <strong>all
+              topics</strong> to unlock the quiz.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: QUIZ -->
+  <div id="sc-quiz" class="screen">
+    <div class="topbar">
+      <div class="tb-brand" onclick="confirmLeave()">🎓 AI Study Buddy</div>
+      <div class="tb-steps">
+        <div class="ts done">① Language</div>
+        <div class="ts done">② Topics</div>
+        <div class="ts active">③ Quiz</div>
+        <div class="ts">④ Results</div>
+      </div>
+      <div class="quiz-answered-badge"><span id="answered-count">0</span> / <span id="total-count">0</span> answered
+      </div>
+    </div>
+    <div class="quiz-body-wrap">
+      <div class="quiz-header">
+        <div>
+          <h2 id="quiz-title">📝 Final Quiz</h2>
+          <p id="quiz-subtitle">Answer all questions — you need 85%+ per topic to pass</p>
+        </div>
+      </div>
+      <div class="quiz-pbar">
+        <div class="quiz-pbar-fill" id="quiz-pbar-fill"></div>
+      </div>
+      <div id="q-cards" class="q-cards"></div>
+      <div class="quiz-submit-row">
+        <button class="btn btn-primary btn-xl" onclick="submitQuiz()">📨 Submit Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: RESULTS -->
+  <div id="sc-results" class="screen">
+    <div class="topbar">
+      <div class="tb-brand" onclick="confirmLeave()">🎓 AI Study Buddy</div>
+      <div class="tb-steps">
+        <div class="ts done">① Language</div>
+        <div class="ts done">② Topics</div>
+        <div class="ts done">③ Quiz</div>
+        <div class="ts active">④ Results</div>
+      </div>
+      <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
+    </div>
+    <div class="results-body" id="results-body"></div>
+  </div>
+
+  <!-- CONFIRM LEAVE MODAL -->
+  <div id="modal-leave" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon">⚠️</div>
+      <h3>Leave Session?</h3>
+      <p>Your current progress will be lost if you go back.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Stay Here</button>
+        <button class="btn btn-danger" onclick="hardLeave()">Leave</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="/static/js/theme-switcher.js"></script>
+  <script>
+    // ── STATE ────────────────────────────────────────────
+    const S = {
+      lang: null, langColor: null, langIcon: null,
+      topics: [], done: new Set(), currentTid: null,
+      quizToken: null, quizQs: [], quizAns: {},
+      weakTopics: [], isRetake: false
+    };
+
+    // ── SCREEN ───────────────────────────────────────────
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── TOAST ────────────────────────────────────────────
+    function toast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'show ' + type;
+      clearTimeout(t._t); t._t = setTimeout(() => t.className = '', 3500);
+    }
+
+    // ── MODAL ────────────────────────────────────────────
+    function confirmLeave() { document.getElementById('modal-leave').classList.add('open') }
+    function closeModal() { document.getElementById('modal-leave').classList.remove('open') }
+    function hardLeave() { window.location = '/dashboard' }
+
+    // ── LOAD LANGUAGES ───────────────────────────────────
+    async function loadLanguages() {
+      const grid = document.getElementById('lang-grid');
+      try {
+        const res = await fetch('/api/languages');
+        const langs = await res.json();
+        grid.innerHTML = langs.map((l, i) => `
+      <div class="lcard ${l.completed ? 'mastered' : ''}"
+           style="--lc:${l.color};animation-delay:${i * .05}s"
+           onclick="selectLang('${l.name}','${l.color}','${l.icon}')">
+        <span class="lcard-icon">${l.icon}</span>
+        <div class="lcard-name">${l.name}</div>
+        <div class="lcard-topics">${l.topic_count} topics · ${l.level}</div>
+        <div class="lcard-desc">${l.desc}</div>
+      </div>`).join('');
+
+        // Check if ?lang= param
+        const urlLang = new URLSearchParams(window.location.search).get('lang');
+        if (urlLang) selectLang(urlLang);
+      } catch { grid.innerHTML = '<p style="color:var(--red);text-align:center;padding:40px">Failed to load languages.</p>' }
+    }
+
+    // ── SELECT LANGUAGE ──────────────────────────────────
+    async function selectLang(name, color, icon) {
+      S.lang = name; S.langColor = color || '#6c63ff'; S.langIcon = icon || '📚';
+      S.done = new Set(); S.weakTopics = []; S.isRetake = false;
+      try {
+        const res = await fetch(`/api/topics/${name}`);
+        const data = await res.json();
+        S.topics = data.topics;
+        // restore saved progress
+        data.topics.forEach(t => { if (t.done) S.done.add(t.id) });
+        setupStudy(data);
+        showScreen('sc-study');
+      } catch { toast('Failed to load topics', 'error') }
+    }
+
+    // ── SETUP STUDY SIDEBAR ──────────────────────────────
+    function setupStudy(data) {
+      const badge = document.getElementById('ss-lang-badge');
+      badge.textContent = `${data.icon}  ${data.language}`;
+      badge.style.cssText = `background:${data.color}18;color:${data.color};border:1px solid ${data.color}40`;
+      document.getElementById('topic-content').innerHTML = `
+    <div class="topic-empty">
+      <div class="te-icon">👈</div>
+      <h3>Select a topic to begin</h3>
+      <p>Work through each topic and click <strong>Mark as Complete</strong>. Complete all ${data.topics.length} topics to unlock the quiz.</p>
+    </div>`;
+      renderTopicList(); updateProgress();
+    }
+
+    function renderTopicList() {
+      const list = document.getElementById('topic-list');
+      list.innerHTML = S.topics.map(t => {
+        const done = S.done.has(t.id);
+        const active = S.currentTid === t.id;
+        const weak = S.weakTopics.includes(t.id);
+        const icon = done ? '✅' : (weak ? '⚠️' : '○');
+        return `<div class="topic-row ${active ? 'active' : ''} ${done ? 'done' : ''}" id="tr-${t.id}" onclick="openTopic('${t.id}')">
+      <span class="tr-icon">${icon}</span>
+      <span>${t.title}</span>
+    </div>`;
+      }).join('');
+    }
+
+    function updateProgress() {
+      const total = S.topics.length, done = S.done.size;
+      const pct = total ? done / total * 100 : 0;
+      document.getElementById('prog-txt').textContent = `${done} / ${total}`;
+      document.getElementById('prog-fill').style.width = pct + '%';
+      const locked = document.getElementById('quiz-locked-msg');
+      const unlockBtn = document.getElementById('quiz-unlock-btn');
+      if (done >= total && total > 0) {
+        locked.classList.add('hidden'); unlockBtn.classList.remove('hidden');
+      } else {
+        locked.classList.remove('hidden'); unlockBtn.classList.add('hidden');
+        locked.textContent = `🔒 ${total - done} more topic${total - done !== 1 ? 's' : ''} to unlock quiz`;
+      }
+    }
+
+    // ── OPEN TOPIC ───────────────────────────────────────
+    async function openTopic(tid) {
+      S.currentTid = tid; renderTopicList();
+      const content = document.getElementById('topic-content');
+      content.innerHTML = '<div class="spinner"></div>';
+      try {
+        const res = await fetch(`/api/topic/${S.lang}/${tid}`);
+        const t = await res.json();
+        renderTopicContent(t);
+      } catch { content.innerHTML = '<p style="color:var(--red);padding:40px">Failed to load topic.</p>' }
+    }
+
+    function renderTopicContent(t) {
+      const isDone = S.done.has(t.id);
+      const idx = S.topics.findIndex(x => x.id === t.id);
+      const next = idx + 1 < S.topics.length ? S.topics[idx + 1] : null;
+      document.getElementById('topic-content').innerHTML = `
+    <div class="content-card">
+      <div class="breadcrumb">${S.lang} › ${t.title}</div>
+      <h1 class="content-title">${t.title}</h1>
+      <div class="content-subtitle">📖 Learning Material</div>
+      <div class="section-label">Description</div>
+      <p class="content-desc">${t.desc}</p>
+      <div class="section-label">Code Examples</div>
+      <div class="code-wrap">
+        <div class="code-topbar">
+          <div class="code-dot cd-red"></div>
+          <div class="code-dot cd-yellow"></div>
+          <div class="code-dot cd-green"></div>
+          <span class="code-lang-tag">${S.lang}</span>
+        </div>
+        <pre class="code-block">${escHtml(t.code)}</pre>
+      </div>
+      <div class="complete-row">
+        <span class="complete-hint">${isDone ? '✅ Already completed — review anytime.' : '📌 Read the content carefully, then mark it complete.'}</span>
+        <div style="display:flex;align-items:center;gap:16px">
+          ${isDone
+          ? `<button class="btn btn-success btn-complete-done">✅ Completed</button>
+               ${next && !S.done.has(next.id) ? `<span class="next-topic-hint" onclick="openTopic('${next.id}')">Next: ${next.title} →</span>` : ''}`
+          : `<button class="btn btn-success" onclick="markDone('${t.id}')">✅ Mark as Complete</button>`}
+        </div>
+      </div>
+    </div>`;
+    }
+
+    // ── MARK COMPLETE ────────────────────────────────────
+    async function markDone(tid) {
+      S.done.add(tid);
+      // Save to server
+      fetch('/api/topic/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: S.lang, topic_id: tid }) });
+      renderTopicList(); updateProgress();
+      const t = S.topics.find(x => x.id === tid);
+      const idx = S.topics.findIndex(x => x.id === tid);
+      const next = idx + 1 < S.topics.length ? S.topics[idx + 1] : null;
+      // update button
+      const row = document.querySelector('.complete-row');
+      if (row) {
+        row.innerHTML = `<span class="complete-hint">✅ Topic marked complete!</span>
+      <div style="display:flex;align-items:center;gap:16px">
+        <button class="btn btn-success btn-complete-done">✅ Completed</button>
+        ${next && !S.done.has(next.id) ? `<span class="next-topic-hint" onclick="openTopic('${next.id}')">Next: ${next.title} →</span>` : ''}
+      </div>`;
+      }
+      toast(`"${t?.title}" completed! (${S.done.size}/${S.topics.length})`);
+      if (next && !S.done.has(next.id)) { setTimeout(() => openTopic(next.id), 900) }
+    }
+
+    // ── START QUIZ ───────────────────────────────────────
+    async function startQuiz(tids = null, isRetake = false) {
+      S.isRetake = isRetake; S.quizAns = {};
+      try {
+        const res = await fetch('/api/quiz/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: S.lang, topic_ids: tids || [] }) });
+        const data = await res.json();
+        if (data.error) { toast(data.error, 'error'); return }
+        S.quizToken = data.token; S.quizQs = data.questions;
+        renderQuiz(isRetake); showScreen('sc-quiz');
+      } catch { toast('Failed to load quiz', 'error') }
+    }
+
+    // ── RENDER QUIZ ──────────────────────────────────────
+    function renderQuiz(isRetake) {
+      document.getElementById('quiz-title').textContent = isRetake ? '📝 Re-Quiz: Weak Topics' : '🎯 Final Quiz';
+      document.getElementById('quiz-subtitle').textContent = isRetake ? `Retake your weak topics — need 85%+` : `Answer all questions carefully — need 85%+ per topic`;
+      const total = S.quizQs.length;
+      document.getElementById('total-count').textContent = total;
+      document.getElementById('answered-count').textContent = '0';
+      document.getElementById('quiz-pbar-fill').style.width = '0%';
+      const LETTERS = ['A', 'B', 'C', 'D'];
+      document.getElementById('q-cards').innerHTML = S.quizQs.map((q, qi) => `
+    <div class="q-card" id="qcard-${qi}">
+      <div class="q-topic-tag">${q.topic_title}</div>
+      <div class="q-num">Question ${qi + 1} of ${total}</div>
+      <div class="q-text">${escHtml(q.question)}</div>
+      <div class="q-opts">
+        ${q.options.map((opt, oi) => `
+          <button class="opt-btn" id="opt-${qi}-${oi}" onclick="selectAns(${qi},${oi},'${q.qid}')">
+            <span class="opt-letter">${LETTERS[oi]}</span>
+            <span>${escHtml(opt)}</span>
+          </button>`).join('')}
+      </div>
+      <div id="hint-area-${qi}"></div>
+      <div class="q-actions">
+        <button class="btn btn-ghost btn-sm" id="hint-btn-${qi}" onclick="getHint(${qi})">💡 Get Hint</button>
+      </div>
+    </div>`).join('');
+    }
+
+    // ── GET HINT ─────────────────────────────────────────
+    async function getHint(qi) {
+      const q = S.quizQs[qi];
+      const btn = document.getElementById(`hint-btn-${qi}`);
+      const area = document.getElementById(`hint-area-${qi}`);
+      btn.disabled = true; btn.textContent = '✨ Thinking...';
+      try {
+        const res = await fetch('/api/ai/hint', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q.question, options: q.options, topic: q.topic_title, language: S.lang })
+        });
+        const data = await res.json();
+        if (data.success) {
+          area.innerHTML = `<div class="hint-box"><b>AI Hint:</b> ${escHtml(data.hint)}</div>`;
+          btn.classList.add('hidden');
+        } else {
+          btn.textContent = '💡 Get Hint'; btn.disabled = false;
+          toast('AI is busy. Try again later.', 'warn');
+        }
+      } catch {
+        btn.textContent = '💡 Get Hint'; btn.disabled = false;
+        toast('Connection error while getting hint.', 'error');
+      }
+    }
+
+    // ── SELECT ANSWER ────────────────────────────────────
+    function selectAns(qi, oi, qid) {
+      const q = S.quizQs[qi];
+      q.options.forEach((_, i) => document.getElementById(`opt-${qi}-${i}`)?.classList.remove('selected'));
+      document.getElementById(`opt-${qi}-${oi}`)?.classList.add('selected');
+      S.quizAns[qid] = oi;
+      document.getElementById(`qcard-${qi}`)?.classList.add('answered');
+      const answeredCount = Object.keys(S.quizAns).length;
+      document.getElementById('answered-count').textContent = answeredCount;
+      document.getElementById('quiz-pbar-fill').style.width = (answeredCount / S.quizQs.length * 100) + '%';
+    }
+
+    // ── SUBMIT QUIZ ──────────────────────────────────────
+    async function submitQuiz() {
+      const unanswered = S.quizQs.filter(q => S.quizAns[q.qid] === undefined);
+      if (unanswered.length) {
+        toast(`⚠️ Answer all ${unanswered.length} remaining question${unanswered.length !== 1 ? 's' : ''}!`, 'warn');
+        const firstIdx = S.quizQs.findIndex(q => S.quizAns[q.qid] === undefined);
+        document.getElementById(`qcard-${firstIdx}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const btn = document.querySelector('#sc-quiz .btn-xl');
+      const originalText = btn.textContent;
+      btn.disabled = true; btn.textContent = '📤 Submitting...';
+
+      try {
+        const res = await fetch('/api/quiz/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: S.quizToken, answers: S.quizAns }) });
+        const data = await res.json();
+        if (data.error) {
+          toast(data.error, 'error');
+          btn.disabled = false; btn.textContent = originalText;
+          return;
+        }
+        S.weakTopics = data.weak_topics || [];
+        renderResults(data); showScreen('sc-results');
+      } catch {
+        toast('Failed to submit quiz. Please check your connection.', 'error');
+        btn.disabled = false; btn.textContent = originalText;
+      }
+    }
+
+    // ── RENDER RESULTS ───────────────────────────────────
+    function renderResults(data) {
+      const passed = data.passed, overall = data.overall_percentage;
+      const heroColor = passed ? '#34d399' : '#f87171';
+      const C = 2 * Math.PI * 52, offset = C - (overall / 100) * C;
+      const ringColor = passed ? '#34d399' : overall >= 60 ? '#fbbf24' : '#f87171';
+
+      const topicCards = data.results.map(r => `
+    <div class="tr-card">
+      <div class="tr-top">
+        <span class="tr-name">${r.topic_title}</span>
+        <div class="tr-right">
+          <span class="tr-badge ${r.passed ? 'pass' : 'fail'}">${r.passed ? '✅ Good' : '📚 Review'}</span>
+          <span class="tr-score ${r.passed ? 'pass' : 'fail'}">${r.percentage}% (${r.correct}/${r.total})</span>
+        </div>
+      </div>
+      <div class="tr-bar-track"><div class="tr-bar-fill ${r.passed ? 'pass' : 'fail'}" id="trbar-${r.topic_id}" style="width:0%"></div></div>
+    </div>`).join('');
+
+      const alertBox = passed
+        ? `<div class="result-alert pass"><span>🎉</span><span>Overall score 85%+! You have achieved full mastery in <strong>${S.lang}</strong>.</span></div>`
+        : `<div class="result-alert fail"><span>⚠️</span><span>Overall score below 85%. You're close! Review the topics below (below 85%) to reach the passing threshold.</span></div>`;
+
+      const actions = passed
+        ? `${data.cert_id ? `<button class="btn btn-success btn-lg" onclick="window.location='/certificate/${data.cert_id}'">🏆 View Certificate</button>` : ''}
+      <button class="btn btn-primary" onclick="window.location='/dashboard'">🏠 Dashboard</button>
+      <button class="btn btn-secondary" onclick="startQuiz(null,false)">🔄 Retake Content</button>`
+        : `<button class="btn btn-primary btn-xl" onclick="reStudyWeak()">📖 Re-Study Weak Topics</button>
+      <button class="btn btn-secondary" onclick="window.location='/dashboard'">🏠 Dashboard</button>`;
+
+      document.getElementById('results-body').innerHTML = `
+    <div class="result-hero" style="--hero-color:${heroColor}">
+      <span class="result-emoji">${passed ? '🏆' : '📚'}</span>
+      <div class="result-status" style="color:${heroColor}">${passed ? 'Congratulations! You Passed!' : 'Keep Going! Almost There!'}</div>
+      <div class="result-msg">${passed ? `You scored ${overall}% overall and mastered the course!` : `You scored ${overall}% overall. You need 85% overall to pass and earn your certificate.`}</div>
+      <svg class="score-ring-svg" viewBox="0 0 120 120">
+        <circle class="ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="ring-fill" cx="60" cy="60" r="52" stroke="${ringColor}"
+          stroke-dasharray="${C}" stroke-dashoffset="${C}" id="ring-anim"/>
+        <text class="ring-pct" x="60" y="65" text-anchor="middle">${overall}%</text>
+        <text class="ring-label" x="60" y="80" text-anchor="middle">Overall Score</text>
+      </svg>
+      <div class="score-desc">Overall score of 85% required for certificate</div>
+    </div>
+    <div class="rs-hd">Topic-wise Performance</div>
+    <div class="topic-results">${topicCards}</div>
+    ${alertBox}
+    <div class="result-actions">${actions}</div>`;
+
+      setTimeout(() => {
+        document.getElementById('ring-anim').style.strokeDashoffset = offset;
+        data.results.forEach(r => { const bar = document.getElementById(`trbar-${r.topic_id}`); if (bar) bar.style.width = r.percentage + '%' });
+      }, 350);
+    }
+
+    // ── RE-STUDY WEAK TOPICS ─────────────────────────────
+    function reStudyWeak() {
+      if (!S.weakTopics.length) return;
+      S.weakTopics.forEach(tid => S.done.delete(tid));
+      const btn = document.getElementById('quiz-unlock-btn');
+      btn.textContent = `🔁 Retake Quiz (${S.weakTopics.length} weak topic${S.weakTopics.length !== 1 ? 's' : ''})`;
+      btn.onclick = () => {
+        const allDone = S.weakTopics.every(tid => S.done.has(tid));
+        if (!allDone) {
+          const rem = S.weakTopics.filter(tid => !S.done.has(tid)).length;
+          toast(`Complete ${rem} more weak topic${rem !== 1 ? 's' : ''} first!`, 'warn');
+          return;
+        }
+        startQuiz(S.weakTopics, true);
+      };
+      renderTopicList(); updateProgress();
+      showScreen('sc-study');
+      setTimeout(() => {
+        openTopic(S.weakTopics[0]);
+        toast(`Re-study ${S.weakTopics.length} weak topic${S.weakTopics.length !== 1 ? 's' : ''}, then retake the quiz!`, 'warn');
+      }, 400);
+    }
+
+    function escHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+
+    // ── INIT ─────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', loadLanguages);
+    document.getElementById('modal-leave').addEventListener('click', function (e) { if (e.target === this) closeModal() });
+  </script>
+  <div id="toast"></div>
+</body>
+
+</html>
